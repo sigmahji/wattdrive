@@ -617,7 +617,10 @@ export const GarageTab: React.FC = () => {
       {/* Add Vehicle Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-[430px] max-h-[85vh] bg-slate-900 border-t border-slate-750 rounded-t-3xl p-5 shadow-2xl overflow-y-auto animate-in slide-in-from-bottom duration-200 flex flex-col gap-4">
+          <div
+            className="w-full max-w-[430px] max-h-[85vh] bg-slate-900 border-t border-slate-750 rounded-t-3xl p-5 shadow-2xl overflow-y-auto animate-in slide-in-from-bottom duration-200 flex flex-col gap-4"
+            style={{ paddingBottom: 'calc(var(--sab, 0px) + 1.25rem)' }}
+          >
             <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto -mt-1" />
 
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -717,7 +720,10 @@ export const GarageTab: React.FC = () => {
       {/* Add Maintenance Item Modal */}
       {isAddItemModalOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-[430px] bg-slate-900 border-t border-slate-750 rounded-t-3xl p-5 shadow-2xl space-y-3 animate-in slide-in-from-bottom duration-200">
+          <div
+            className="w-full max-w-[430px] bg-slate-900 border-t border-slate-750 rounded-t-3xl p-5 shadow-2xl space-y-3 animate-in slide-in-from-bottom duration-200"
+            style={{ paddingBottom: 'calc(var(--sab, 0px) + 1.25rem)' }}
+          >
             <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto -mt-1" />
 
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">

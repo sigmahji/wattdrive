@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">WattDrive: Global EV, Fuel &amp; Solar Calculator</string>
+    <string name="title_activity_main">WattDrive: Global EV, Fuel &amp; Solar Calculator</string>
+    <string name="package_name">com.wattdrive.app</string>
+    <string name="custom_url_scheme">com.wattdrive.app</string>
+</resources>

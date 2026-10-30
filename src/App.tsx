@@ -17,8 +17,11 @@ export const AppContent: React.FC = () => {
         {/* Persistent Top Global Settings Bar */}
         <GlobalSettingsBar />
 
-        {/* Tab Content Area (with 145px bottom padding for BottomNav + 65px AdMob zone) */}
-        <main className="flex-1 px-3 pt-3 pb-[145px] overflow-y-auto">
+        {/* Tab Content Area (with dynamic bottom padding for BottomNav + 65px AdMob zone + Safe Area) */}
+        <main
+          className="flex-1 px-3 pt-3 overflow-y-auto"
+          style={{ paddingBottom: 'calc(145px + var(--sab, 0px))' }}
+        >
           {activeTab === 'commute' && <CommuteRoiTab />}
           {activeTab === 'solar' && <SolarSizerTab />}
           {activeTab === 'garage' && <GarageTab />}

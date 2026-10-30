@@ -1,9 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { REGION_PRESETS, type AppSettings, type RegionKey, type RegionPreset } from '../types/settings';
+import { SystemBars, SystemBarsStyle } from '@capacitor/core';
+import {
+  REGION_PRESETS,
+  type AppSettings,
+  type RegionKey,
+  type RegionPreset,
+  type ThemeMode,
+  type UserProfile,
+} from '../types/settings';
 
 interface SettingsContextType {
   settings: AppSettings;
   activePreset: RegionPreset;
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  toggleTheme: () => void;
+  profile: UserProfile;
+  updateProfile: (partial: Partial<UserProfile>) => void;
   setRegion: (region: RegionKey) => void;
   updateSettings: (partial: Partial<AppSettings>) => void;
   formatCurrency: (amount: number, options?: { maximumFractionDigits?: number; minimumFractionDigits?: number }) => string;
@@ -17,7 +30,18 @@ const STORAGE_KEY = 'wattdrive_global_settings_v1';
 const defaultRegion: RegionKey = 'usa';
 const defaultPreset = REGION_PRESETS[defaultRegion];
 
+export const initialProfile: UserProfile = {
+  name: 'Alex Morgan',
+  email: 'alex.driver@wattdrive.app',
+  avatar: '⚡',
+  driverPersona: 'Daily Commuter',
+  dailyDistanceGoal: 40,
+  memberSince: '2026',
+};
+
 const initialSettings: AppSettings = {
+  theme: 'dark',
+  profile: initialProfile,
   region: defaultRegion,
   currencySymbol: defaultPreset.currencySymbol,
   currencyCode: defaultPreset.currencyCode,
@@ -43,7 +67,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.region && REGION_PRESETS[parsed.region as RegionKey]) {
-          return { ...initialSettings, ...parsed };
+          return {
+            ...initialSettings,
+            ...parsed,
+            profile: { ...initialProfile, ...(parsed.profile || {}) },
+            theme: (parsed.theme === 'light' || parsed.theme === 'dark') ? parsed.theme : 'dark',
+          };
         }
       }
     } catch (e) {
@@ -51,6 +80,34 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
     return initialSettings;
   });
+
+  // Keep DOM theme class, meta theme-color and Capacitor SystemBars in sync with active theme
+  useEffect(() => {
+    const isLight = settings.theme === 'light';
+    const root = document.documentElement;
+    if (isLight) {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+    }
+
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', isLight ? '#f8fafc' : '#0f172a');
+    }
+
+    try {
+      SystemBars.setStyle({
+        style: isLight ? SystemBarsStyle.Light : SystemBarsStyle.Dark,
+      }).catch(() => {});
+    } catch {
+      // Ignore on web
+    }
+  }, [settings.theme]);
 
   useEffect(() => {
     try {
@@ -61,6 +118,27 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [settings]);
 
   const activePreset = REGION_PRESETS[settings.region] || REGION_PRESETS.usa;
+
+  const setTheme = (theme: ThemeMode) => {
+    setSettings((prev) => ({ ...prev, theme }));
+  };
+
+  const toggleTheme = () => {
+    setSettings((prev) => ({
+      ...prev,
+      theme: prev.theme === 'light' ? 'dark' : 'light',
+    }));
+  };
+
+  const updateProfile = (partial: Partial<UserProfile>) => {
+    setSettings((prev) => ({
+      ...prev,
+      profile: {
+        ...(prev.profile || initialProfile),
+        ...partial,
+      },
+    }));
+  };
 
   const setRegion = (region: RegionKey) => {
     const preset = REGION_PRESETS[region];
@@ -123,6 +201,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       value={{
         settings,
         activePreset,
+        theme: settings.theme || 'dark',
+        setTheme,
+        toggleTheme,
+        profile: settings.profile || initialProfile,
+        updateProfile,
         setRegion,
         updateSettings,
         formatCurrency,

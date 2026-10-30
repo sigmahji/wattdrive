@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
-import { Globe, Sliders, Check, RotateCcw, X, Zap } from 'lucide-react';
+import { Globe, Sliders, Check, RotateCcw, X, Zap, Sun, Moon, User } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 import { REGION_PRESETS, type RegionKey } from '../types/settings';
+import { ProfileModal } from './ProfileModal';
 
 export const GlobalSettingsBar: React.FC = () => {
   const {
     settings,
     activePreset,
+    theme,
+    toggleTheme,
+    setTheme,
+    profile,
     setRegion,
     updateSettings,
     resetToRegionDefaults,
   } = useSettings();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
 
   const regionList = Object.values(REGION_PRESETS);
@@ -20,7 +26,10 @@ export const GlobalSettingsBar: React.FC = () => {
   return (
     <>
       {/* Top Fixed Header with Persistent Global Settings Bar */}
-      <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-3 py-2.5 shadow-sm transition-all">
+      <header
+        className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-3 pb-2.5 shadow-sm transition-all"
+        style={{ paddingTop: 'calc(var(--sat, 0px) + 0.625rem)' }}
+      >
         <div className="flex items-center justify-between gap-2 max-w-md mx-auto">
           {/* Logo & Brand */}
           <div className="flex items-center gap-2">
@@ -98,6 +107,32 @@ export const GlobalSettingsBar: React.FC = () => {
               )}
             </div>
 
+            {/* Quick Theme Switcher Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-750 active:scale-95 transition-all"
+              aria-label={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+              title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+            >
+              {theme === 'light' ? (
+                <Moon className="w-4 h-4 text-cyan-500" />
+              ) : (
+                <Sun className="w-4 h-4 text-amber-400" />
+              )}
+            </button>
+
+            {/* Profile Access Button */}
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-1 p-1 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-200 hover:text-white hover:bg-slate-750 active:scale-95 transition-all"
+              aria-label="Driver Profile Access"
+              title={`Driver Profile (${profile.name})`}
+            >
+              <span className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold leading-none">
+                {profile.avatar || <User className="w-3.5 h-3.5" />}
+              </span>
+            </button>
+
             {/* Custom Tuning Drawer Button */}
             <button
               onClick={() => setIsModalOpen(true)}
@@ -140,6 +175,7 @@ export const GlobalSettingsBar: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div
             className="w-full max-w-[430px] max-h-[85vh] bg-slate-900 border-t border-slate-750 rounded-t-3xl p-5 shadow-2xl overflow-y-auto animate-in slide-in-from-bottom duration-200 flex flex-col gap-4"
+            style={{ paddingBottom: 'calc(var(--sab, 0px) + 1.25rem)' }}
           >
             {/* Modal Handle */}
             <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto -mt-1 mb-1" />
@@ -264,6 +300,46 @@ export const GlobalSettingsBar: React.FC = () => {
               </div>
             </div>
 
+            {/* Theme Preference Option in Settings Modal */}
+            <div className="space-y-1.5 pt-2 border-t border-slate-800">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Display Theme
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${
+                    theme === 'dark'
+                      ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300'
+                      : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Moon className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Dark Slate</span>
+                  </div>
+                  {theme === 'dark' && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${
+                    theme === 'light'
+                      ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300'
+                      : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Sun className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Light Daylight</span>
+                  </div>
+                  {theme === 'light' && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                </button>
+              </div>
+            </div>
+
             {/* Reset to Defaults & Done */}
             <div className="flex items-center gap-2 pt-2 border-t border-slate-800">
               <button
@@ -283,6 +359,12 @@ export const GlobalSettingsBar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Driver Profile Access Modal */}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
     </>
   );
 };

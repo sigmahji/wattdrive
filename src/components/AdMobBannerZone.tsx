@@ -26,12 +26,15 @@ export const AdMobBannerZone: React.FC = () => {
 
   return (
     <>
-      {/* 65px Strict Safe Zone for AdMob Adaptive Banner */}
+      {/* Strict Safe Zone for AdMob Adaptive Banner (expanded for bottom gesture safe area) */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 h-[65px] bg-slate-950/95 border-t border-slate-800 flex items-center justify-center px-3"
-        style={{ height: '65px' }}
+        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-slate-800 flex items-center justify-center px-3 transition-all"
+        style={{
+          height: 'calc(65px + var(--sab, 0px))',
+          paddingBottom: 'var(--sab, 0px)',
+        }}
       >
-        <div className="w-full max-w-[430px] h-full flex items-center justify-between px-2 text-xs">
+        <div className="w-full max-w-[430px] h-[65px] flex items-center justify-between px-2 text-xs">
           {/* Simulated Adaptive Banner Display */}
           <div className="w-full h-[50px] bg-slate-900/90 rounded-lg border border-dashed border-emerald-500/30 flex items-center justify-between px-3 relative overflow-hidden">
             <div className="flex items-center gap-2">

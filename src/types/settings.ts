@@ -34,7 +34,20 @@ export interface RegionPreset {
   defaultSolarCostPerWatt: number;
 }
 
+export type ThemeMode = 'dark' | 'light';
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatar: string; // e.g. '⚡' | '🚗' | '☀️' | '🌿' | '🏎️' | '🔋'
+  driverPersona: string;
+  dailyDistanceGoal: number;
+  memberSince: string;
+}
+
 export interface AppSettings {
+  theme: ThemeMode;
+  profile: UserProfile;
   region: RegionKey;
   currencySymbol: string;
   currencyCode: string;

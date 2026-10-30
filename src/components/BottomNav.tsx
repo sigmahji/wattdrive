@@ -11,8 +11,8 @@ interface BottomNavProps {
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
   return (
     <nav
-      className="fixed left-0 right-0 z-30 flex justify-center bg-slate-900/95 backdrop-blur-lg border-t border-slate-800"
-      style={{ bottom: '65px' }} // Positioned exactly above the 65px AdMob Safe Zone
+      className="fixed left-0 right-0 z-30 flex justify-center bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 transition-all"
+      style={{ bottom: 'calc(65px + var(--sab, 0px))' }} // Positioned exactly above the 65px AdMob Safe Zone + bottom inset
     >
       <div className="w-full max-w-[430px] h-15 flex items-center justify-around px-2">
         {/* Tab 1: Commute ROI */}

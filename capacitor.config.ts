@@ -8,6 +8,11 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
+    SystemBars: {
+      initialViewportFitValueHint: 'cover',
+      style: 'DARK',
+      insetsHandling: 'css',
+    },
     SplashScreen: {
       launchShowDuration: 1500,
       launchAutoHide: true,
