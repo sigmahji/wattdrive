@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Globe, Sliders, Check, RotateCcw, X, Zap, Sun, Moon, User } from 'lucide-react';
+import {
+  Globe,
+  Check,
+  RotateCcw,
+  X,
+  Zap,
+  Sun,
+  Moon,
+  User,
+  Fuel,
+  Plug,
+  ChevronDown,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 import { REGION_PRESETS, type RegionKey } from '../types/settings';
 import { ProfileModal } from './ProfileModal';
@@ -23,6 +36,18 @@ export const GlobalSettingsBar: React.FC = () => {
 
   const regionList = Object.values(REGION_PRESETS);
 
+  // Clean rate value formatter that displays integers cleanly (e.g. 400 vs 400.00)
+  const formatRateValue = (val: number): string => {
+    if (val >= 100) {
+      return val % 1 === 0 ? val.toFixed(0) : val.toFixed(1);
+    }
+    return val % 1 === 0 ? val.toFixed(0) : val.toFixed(2);
+  };
+
+  const formatVoltage = (volt: string): string => {
+    return volt.replace(' / ', '/');
+  };
+
   return (
     <>
       {/* Top Fixed Header with Persistent Global Settings Bar */}
@@ -31,36 +56,42 @@ export const GlobalSettingsBar: React.FC = () => {
         style={{ paddingTop: 'calc(var(--sat, 0px) + 0.625rem)' }}
       >
         <div className="flex items-center justify-between gap-2 max-w-md mx-auto">
-          {/* Logo & Brand */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Zap className="w-5 h-5 text-slate-950 fill-slate-950" />
+          {/* Logo & Brand Identity */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 via-emerald-400 to-cyan-400 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0 ring-1 ring-white/10">
+              <Zap className="w-4.5 h-4.5 text-slate-950 fill-slate-950" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5 leading-none">
-                <span className="font-bold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+                <span className="font-extrabold text-[16px] tracking-tight text-white dark:text-white">
                   WattDrive
                 </span>
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-                  Global
-                </span>
               </div>
-              <p className="text-[10px] text-slate-400 leading-tight">EV, Fuel & Solar Calculator</p>
+              <p className="text-[10px] text-slate-400 font-medium tracking-wide leading-tight truncate mt-0.5">
+                EV & Energy Intelligence
+              </p>
             </div>
           </div>
 
-          {/* Quick Region Selector & Settings Trigger */}
-          <div className="flex items-center gap-1.5">
-            {/* Quick Country Switcher Button */}
+          {/* Quick Region Selector & Sleek Actions Cluster */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Quick Country Switcher Capsule */}
             <div className="relative">
               <button
                 onClick={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/90 border border-slate-700/80 hover:bg-slate-750 active:scale-95 transition-all text-xs font-medium text-slate-200"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-800/80 hover:bg-slate-750 active:scale-95 border border-slate-700/80 transition-all text-xs font-semibold text-slate-200 shadow-sm"
                 aria-label="Change Region"
+                title={`Active Region: ${activePreset.name}`}
               >
-                <span className="text-sm leading-none">{activePreset.flag}</span>
-                <span className="font-semibold">{activePreset.shortName}</span>
-                <span className="text-slate-400 text-[10px]">({settings.currencySymbol})</span>
+                <span className="text-sm leading-none shrink-0">{activePreset.flag}</span>
+                <span className="truncate max-w-[62px] sm:max-w-none text-[11px] font-bold">
+                  {activePreset.shortName}
+                </span>
+                <ChevronDown
+                  className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${
+                    isRegionDropdownOpen ? 'rotate-180 text-emerald-400' : ''
+                  }`}
+                />
               </button>
 
               {/* Quick Region Popup Menu */}
@@ -70,8 +101,8 @@ export const GlobalSettingsBar: React.FC = () => {
                     className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
                     onClick={() => setIsRegionDropdownOpen(false)}
                   />
-                  <div className="absolute right-0 mt-1.5 w-60 z-50 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 space-y-0.5 max-h-80 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
-                    <div className="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                  <div className="absolute right-0 mt-1.5 w-64 z-50 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 space-y-0.5 max-h-80 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
+                    <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-800">
                       Select Region Preset
                     </div>
                     {regionList.map((preset) => {
@@ -83,7 +114,7 @@ export const GlobalSettingsBar: React.FC = () => {
                             setRegion(preset.id as RegionKey);
                             setIsRegionDropdownOpen(false);
                           }}
-                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
                             isSelected
                               ? 'bg-emerald-500/15 text-emerald-300 font-semibold'
                               : 'text-slate-300 hover:bg-slate-800 active:bg-slate-700'
@@ -110,12 +141,12 @@ export const GlobalSettingsBar: React.FC = () => {
             {/* Quick Theme Switcher Button */}
             <button
               onClick={toggleTheme}
-              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-750 active:scale-95 transition-all"
+              className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-750 active:scale-95 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-sm"
               aria-label={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
               title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
             >
               {theme === 'light' ? (
-                <Moon className="w-4 h-4 text-cyan-500" />
+                <Moon className="w-4 h-4 text-indigo-500" />
               ) : (
                 <Sun className="w-4 h-4 text-amber-400" />
               )}
@@ -124,11 +155,11 @@ export const GlobalSettingsBar: React.FC = () => {
             {/* Profile Access Button */}
             <button
               onClick={() => setIsProfileModalOpen(true)}
-              className="flex items-center gap-1 p-1 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-200 hover:text-white hover:bg-slate-750 active:scale-95 transition-all"
+              className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-750 active:scale-95 border border-slate-700/80 flex items-center justify-center transition-all shadow-sm group"
               aria-label="Driver Profile Access"
               title={`Driver Profile (${profile.name})`}
             >
-              <span className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold leading-none">
+              <span className="w-7 h-7 rounded-full bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-xs font-bold leading-none">
                 {profile.avatar || <User className="w-3.5 h-3.5" />}
               </span>
             </button>
@@ -136,37 +167,82 @@ export const GlobalSettingsBar: React.FC = () => {
             {/* Custom Tuning Drawer Button */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-750 active:scale-95 transition-all"
+              className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-750 active:scale-95 border border-slate-700/80 flex items-center justify-center text-emerald-400 hover:text-emerald-300 transition-all shadow-sm"
               aria-label="Tune Units & Rates"
-              title="Global Preferences"
+              title="Benchmark Rates & Units"
             >
-              <Sliders className="w-4 h-4 text-emerald-400" />
+              <SlidersHorizontal className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Dynamic Metric Badges Row */}
-        <div className="flex items-center justify-between mt-1.5 px-0.5 text-[11px] text-slate-400 overflow-x-auto no-scrollbar gap-2">
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-750 text-slate-300 font-mono text-[10px]">
-              Dist: {settings.distanceUnit}
-            </span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-750 text-slate-300 font-mono text-[10px]">
-              Fuel: {settings.currencySymbol}{settings.fuelPrice.toFixed(2)}/{settings.fuelUnit}
-            </span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-750 text-slate-300 font-mono text-[10px]">
-              Grid: {settings.currencySymbol}{settings.electricityTariff.toFixed(2)}/kWh
-            </span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-750 text-emerald-400 font-mono text-[10px]">
-              {settings.gridVoltage}
-            </span>
+        {/* Modern Live Benchmark Rates Ribbon */}
+        <div className="mt-2">
+          <div className="grid grid-cols-3 gap-1.5">
+            {/* Fuel Benchmark Tile */}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-1.5 p-1.5 px-2 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 hover:border-amber-500/40 text-left transition-all active:scale-[0.98] shadow-sm group"
+              title="Click to adjust Fuel Benchmark Price"
+            >
+              <div className="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Fuel className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">
+                  Fuel
+                </div>
+                <div className="text-xs font-bold text-slate-100 dark:text-slate-100 truncate mt-0.5 leading-tight">
+                  {settings.currencySymbol}{formatRateValue(settings.fuelPrice)}
+                  <span className="text-[10px] font-medium text-slate-400">/{settings.fuelUnit}</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Grid Electricity Tile */}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-1.5 p-1.5 px-2 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 hover:border-cyan-500/40 text-left transition-all active:scale-[0.98] shadow-sm group"
+              title="Click to adjust Grid Electricity Tariff"
+            >
+              <div className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">
+                  Grid
+                </div>
+                <div className="text-xs font-bold text-slate-100 dark:text-slate-100 truncate mt-0.5 leading-tight">
+                  {settings.currencySymbol}{formatRateValue(settings.electricityTariff)}
+                  <span className="text-[10px] font-medium text-slate-400">/kWh</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Supply & Standard Units Tile */}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-1.5 p-1.5 px-2 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 hover:border-emerald-500/40 text-left transition-all active:scale-[0.98] shadow-sm group"
+              title="Click to tune grid voltage, sun hours & units"
+            >
+              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Plug className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[9px] font-semibold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider leading-none flex items-center justify-between">
+                  <span>Supply</span>
+                  <span className="text-[8px] font-bold text-slate-400">EDIT</span>
+                </div>
+                <div className="text-xs font-bold text-slate-100 dark:text-slate-100 truncate mt-0.5 leading-tight">
+                  {formatVoltage(settings.gridVoltage)}
+                  <span className="text-[10px] font-medium text-slate-400"> · {settings.distanceUnit}</span>
+                </div>
+              </div>
+            </button>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-[10px] text-emerald-400 hover:text-emerald-300 underline underline-offset-2 shrink-0 font-medium"
-          >
-            Customize
-          </button>
         </div>
       </header>
 

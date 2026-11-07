@@ -167,9 +167,36 @@ html.light .bg-cyan-500\/20 {
   background-color: #f0f9ff !important; /* sky-50 */
 }
 
+html.light .border-cyan-500\/20,
 html.light .border-cyan-500\/30,
 html.light .border-cyan-500\/40 {
   border-color: #bae6fd !important; /* sky-200 */
+}
+
+/* Amber Accents for Fuel Badges & Rates */
+html.light .text-amber-500,
+html.light .text-amber-400 {
+  color: #d97706 !important; /* amber-600 */
+}
+
+html.light .bg-amber-500\/15,
+html.light .bg-amber-500\/20 {
+  background-color: #fffbeb !important; /* amber-50 */
+}
+
+html.light .border-amber-500\/20,
+html.light .border-amber-500\/30 {
+  border-color: #fde68a !important; /* amber-200 */
+}
+
+/* Benchmark Rates Surface in Light Mode */
+html.light .bg-slate-800\/70 {
+  background-color: #f8fafc !important;
+}
+
+html.light .border-slate-700\/70,
+html.light .border-slate-750\/70 {
+  border-color: #e2e8f0 !important;
 }
 
 /* Form Controls & Inputs in Light Mode */

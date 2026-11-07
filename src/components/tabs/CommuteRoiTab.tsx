@@ -120,25 +120,25 @@ export const CommuteRoiTab: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-2 text-center my-3">
-          <div className="bg-slate-800/80 rounded-xl p-2.5 border border-slate-700/60">
-            <div className="text-[10px] text-slate-400 font-medium">Monthly Saved</div>
-            <div className="text-base font-extrabold text-white mt-0.5 truncate">
+          <div className="bg-slate-800/80 rounded-xl p-2 sm:p-2.5 border border-slate-700/60 flex flex-col justify-between">
+            <div className="text-[10px] text-slate-400 font-medium truncate">Monthly Saved</div>
+            <div className="text-xs min-[380px]:text-sm sm:text-base font-extrabold text-white my-0.5 truncate tracking-tight">
               {formatCurrency(monthlySavings)}
             </div>
             <div className="text-[9px] text-emerald-400 font-medium">per month</div>
           </div>
 
-          <div className="bg-emerald-900/40 rounded-xl p-2.5 border border-emerald-500/40 relative">
-            <div className="text-[10px] text-emerald-300 font-medium">Annual Saved</div>
-            <div className="text-lg font-black text-emerald-300 mt-0.5 truncate">
+          <div className="bg-emerald-900/40 rounded-xl p-2 sm:p-2.5 border border-emerald-500/40 relative flex flex-col justify-between">
+            <div className="text-[10px] text-emerald-300 font-medium truncate">Annual Saved</div>
+            <div className="text-xs min-[380px]:text-sm sm:text-base font-black text-emerald-300 my-0.5 truncate tracking-tight">
               {formatCurrency(annualSavings)}
             </div>
             <div className="text-[9px] text-emerald-400/90 font-medium">1 Year ROI</div>
           </div>
 
-          <div className="bg-slate-800/80 rounded-xl p-2.5 border border-slate-700/60">
-            <div className="text-[10px] text-slate-400 font-medium">5-Year Wealth</div>
-            <div className="text-base font-extrabold text-cyan-300 mt-0.5 truncate">
+          <div className="bg-slate-800/80 rounded-xl p-2 sm:p-2.5 border border-slate-700/60 flex flex-col justify-between">
+            <div className="text-[10px] text-slate-400 font-medium truncate">5-Year Wealth</div>
+            <div className="text-xs min-[380px]:text-sm sm:text-base font-extrabold text-cyan-300 my-0.5 truncate tracking-tight">
               {formatCurrency(fiveYearSavings)}
             </div>
             <div className="text-[9px] text-cyan-400 font-medium">compounded</div>
